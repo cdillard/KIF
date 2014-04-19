@@ -1,5 +1,5 @@
 //
-//  WaitForAbscenceTests.m
+//  WaitForAbsenceTests.m
 //  Test Suite
 //
 //  Created by Brian Nickel on 6/28/13.
@@ -8,10 +8,10 @@
 
 #import <KIF/KIF.h>
 
-@interface WaitForAbscenceTests : KIFTestCase
+@interface WaitForAbsenceTests : KIFTestCase
 @end
 
-@implementation WaitForAbscenceTests
+@implementation WaitForAbsenceTests
 
 - (void)beforeEach
 {

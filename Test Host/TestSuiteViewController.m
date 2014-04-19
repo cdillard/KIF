@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TestSuiteViewController : UITableViewController
+@interface TestSuiteViewController : UITableViewController <UIPopoverControllerDelegate>
+
+@property (nonatomic, strong) UIPopoverController *currentPopoverController;
+
 @end
 
 @implementation TestSuiteViewController
@@ -28,7 +31,7 @@
             
         case 1:
         {
-            [[[UIActionSheet alloc] initWithTitle:@"Action Sheet" delegate:nil cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Destroy" otherButtonTitles:@"A", @"B", nil] showInView:tableView];
+            [[[UIActionSheet alloc] initWithTitle:@"Action Sheet" delegate:nil cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Destroy" otherButtonTitles:@"A", @"B", nil] showFromRect:[tableView cellForRowAtIndexPath:indexPath].frame inView:tableView animated:YES];
             break;
         }
             
@@ -36,12 +39,26 @@
         {
             Class AVCClass = NSClassFromString(@"UIActivityViewController");
             if (AVCClass) {
-                UIActivityViewController *controller = [[AVCClass alloc] initWithActivityItems:@[@"Hello World"] applicationActivities:nil];
-                [self presentViewController:controller animated:YES completion:nil];
+                UIActivityViewController *activityViewController = [[AVCClass alloc] initWithActivityItems:@[@"Hello World"] applicationActivities:nil];
+                
+                if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+                    [self presentViewController:activityViewController animated:YES completion:nil];
+                } else {
+                    self.currentPopoverController = [[UIPopoverController alloc] initWithContentViewController:activityViewController];
+                    self.currentPopoverController.delegate = self;
+                    [self.currentPopoverController presentPopoverFromRect:[tableView cellForRowAtIndexPath:indexPath].frame inView:tableView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+                }
             }
             break;
         }
     }
+}
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    self.currentPopoverController = nil;
 }
 
 @end

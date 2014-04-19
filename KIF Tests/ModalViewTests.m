@@ -37,7 +37,7 @@
     [tester waitForTappableViewWithAccessibilityLabel:@"A"];
     [tester waitForTappableViewWithAccessibilityLabel:@"B"];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         [tester dismissPopover];
     } else {
         [tester tapViewWithAccessibilityLabel:@"Cancel"];
@@ -53,8 +53,12 @@
     [tester tapViewWithAccessibilityLabel:@"UIActivityViewController"];
     [tester waitForTappableViewWithAccessibilityLabel:@"Copy"];
     [tester waitForTappableViewWithAccessibilityLabel:@"Mail"];
-    [tester waitForTappableViewWithAccessibilityLabel:@"Cancel"];
-    [tester tapViewWithAccessibilityLabel:@"Cancel"];
+    
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        [tester tapViewWithAccessibilityLabel:@"Cancel"];
+    } else {
+        [tester dismissPopover];
+    }
 }
 
 @end
