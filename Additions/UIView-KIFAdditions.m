@@ -100,6 +100,11 @@ typedef struct __GSEvent * GSEventRef;
             accessibilityValue = [(NSAttributedString *)accessibilityValue string];
         }
         
+        // While a popover is being dismissed, accessing UIDimmingView's accessibilityLabel crashes with EXC_BAD_ACCESS
+        if ([NSStringFromClass([element class]) isEqualToString:@"UIDimmingView"]) {
+            return NO;
+        }
+        
         BOOL labelsMatch = element.accessibilityLabel == label || [element.accessibilityLabel isEqual:label];
         BOOL traitsMatch = ((element.accessibilityTraits) & traits) == traits;
         BOOL valuesMatch = !value || [value isEqual:accessibilityValue];
