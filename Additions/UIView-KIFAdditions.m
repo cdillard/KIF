@@ -78,12 +78,11 @@ NS_INLINE BOOL StringsMatchExceptLineBreaks(NSString *expected, NSString *actual
     dispatch_once(&onceToken, ^{
         // UIDatePicker contains hundreds of thousands of placeholder accessibility elements that aren't useful to KIF,
         // so don't recurse into a date picker when searching for matching accessibility elements
-        classesToSkip = [[NSSet alloc] initWithObjects:[UIDatePicker class], nil];
+        classesToSkip = [[NSSet alloc] initWithObjects:[UIDatePicker class], [NSClassFromString(@"PRLDSVideoMasterViewController") class], nil];
     });
     
     return classesToSkip;
 }
-
 - (UIAccessibilityElement *)accessibilityElementWithLabel:(NSString *)label
 {
     return [self accessibilityElementWithLabel:label traits:UIAccessibilityTraitNone];
