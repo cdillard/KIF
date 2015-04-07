@@ -169,6 +169,26 @@ NS_INLINE BOOL StringsMatchExceptLineBreaks(NSString *expected, NSString *actual
         [elementStack removeLastObject];
 
         BOOL elementMatches = matchBlock(element);
+        
+        // Remove non-visible table view cells so that they don't stick around
+        if ([element isKindOfClass:NSClassFromString(@"UITableViewCellAccessibilityElement")]) {
+            SEL tableViewCellSelector = NSSelectorFromString(@"tableViewCell");
+            if ([element respondsToSelector:tableViewCellSelector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                UITableViewCell *cell = [(id)element performSelector:tableViewCellSelector];
+#pragma clang diagnostic pop
+                
+                UIView *containerView = [UIAccessibilityElement viewContainingAccessibilityElement:element];
+                if ([containerView isKindOfClass:[UITableView class]]) {
+                    UITableView *tableView = (UITableView *)containerView;
+                    
+                    if (![[tableView indexPathsForVisibleRows] containsObject:[tableView indexPathForCell:cell]]) {
+                        [cell removeFromSuperview];
+                    }
+                }
+            }
+        }
 
         if (elementMatches) {
             UIView *viewForElement = [UIAccessibilityElement viewContainingAccessibilityElement:element];
